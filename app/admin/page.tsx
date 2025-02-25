@@ -36,7 +36,7 @@ export default function AdminDashboard() {
   const [cars, setCars] = useState<Car[]>([]);
   const [account, setAccount] = useState<User>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isloading, setIsLoading] = useState(false);
+  const [isloading, setIsLoading] = useState(true);
   const [editingCar, setEditingCar] = useState<Partial<Car> | null>(null);
 
   const fetchCars = async () => {
@@ -61,6 +61,8 @@ export default function AdminDashboard() {
 
     if (res.data.role !== "admin") {
       router.push("/"); // Reindirizza se non è un admin
+    } else {
+      setIsLoading(false);
     }
   }
 
@@ -230,7 +232,7 @@ export default function AdminDashboard() {
   // };
 
   // Se l'account non è caricato o se l'utente non è admin, non renderizza nulla (o mostra un loading)
-  if (loading || !account) {
+  if (isloading) {
     return (
       <div className="h-screen flex items-center justify-center">
         <l-hatch size="28" stroke="4" speed="3.5" color="black"></l-hatch>

@@ -22,27 +22,30 @@ import { CarCard } from "@/components/ui/car-card";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import ModalEdit from "./components/modal-edit";
 
+import { hatch } from "ldrs";
+
+hatch.register();
+
 export default function AccountPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [cars, setCars] = useState<Car[]>([]);
   //const [user, setUser] = useState<User | null>(null);
-  //const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Se l'utente non è autenticato, redirigi alla pagina di login
-  if (loading) {
-    return (
-      <div className="container mx-auto h-screen flex items-center justify-center px-4 py-8">
-        Loading...
-      </div>
-    );
-  }
+  // Imposta `isLoading` su false solo quando `user` cambia
+  useEffect(() => {
+    if (user) {
+      setIsLoading(false);
+    }
+  }, [user]);
 
-  if (!user) {
-    router.push("/login");
-    return null; // Renderizza null mentre la redirezione avviene
-  }
-
+  // Verifica se l'utente è loggato e redirige alla pagina di login se non lo è
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
   // useEffect(() => {
   //   const fetchUserData = async () => {
   //     try {
@@ -87,9 +90,13 @@ export default function AccountPage() {
     fetchCars();
   }, []);
 
-  // if (isLoading) {
-  //   return <div className="container mx-auto px-4 py-8">Loading...</div>;
-  // }
+  if (loading || isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <l-hatch size="28" stroke="4" speed="3.5" color="black"></l-hatch>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto min-h-screen px-4 py-8">
@@ -99,17 +106,19 @@ export default function AccountPage() {
             <div className="flex justify-between">
               <div className="flex items-center space-x-4">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={user.photoURL || "/default-avatar.png"} />
-                  <AvatarFallback>{user.displayName?.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={user?.photoURL || "/default-avatar.png"} />
+                  <AvatarFallback>
+                    {user?.displayName?.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
-                  <CardTitle>{user.displayName || "User"}</CardTitle>
-                  <CardDescription>{user.email}</CardDescription>
+                  <CardTitle>{user?.displayName || "Nome Utente"}</CardTitle>
+                  <CardDescription>{user?.email}</CardDescription>
                 </div>
               </div>
               <div className="flex gap-5">
                 {/* <Button variant="outline">Edit</Button> */}
-                <ModalEdit />
+                <ModalEdit user={user || null} />
                 <Button
                   variant="destructive"
                   className="bg-red-600"

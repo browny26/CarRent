@@ -12,17 +12,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/authContext";
 import { toast } from "sonner";
-import { updateProfile } from "firebase/auth";
+import { updateProfile, User } from "firebase/auth";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function ModalEdit() {
-  const { user, loading } = useAuth();
+interface ModalEditProps {
+  user: User | null;
+  onClose: () => void;
+}
+
+export default function ModalEdit({ user, onClose }: ModalEditProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [edit, setEdit] = useState({
     displayName: user?.displayName,
     photoURL: user?.photoURL,
   });
+
+  // Aggiorna il form ogni volta che cambia l'utente
+  useEffect(() => {
+    if (user) {
+      setEdit({
+        displayName: user.displayName || "",
+        photoURL: user.photoURL || "",
+      });
+    }
+  }, [user]);
 
   const updateUserProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +45,7 @@ export default function ModalEdit() {
         await updateProfile(user, edit);
         //setUser({ ...user, photoURL }); // Aggiorna lo stato globale
         toast.success("Profile updated!");
+        onClose();
       } catch (error) {
         toast.error("Failed to update profile");
         console.error(error);
