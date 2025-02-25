@@ -52,13 +52,13 @@ export default function SearchPage() {
   //   fetchCars();
   // }, []);
 
-  useEffect(() => {
-    async function fetchCars() {
-      const data = await getCars();
-      setCars(data);
-    }
+  async function fetchCars() {
+    const data = await getCars();
+    setCars(data);
     setLoading(false);
+  }
 
+  useEffect(() => {
     fetchCars();
   }, []);
 
@@ -213,7 +213,7 @@ export default function SearchPage() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCars.map((car) => (
-                <CarCard key={car.id} car={car} />
+                <CarCard key={car.id} car={car} onRent={() => fetchCars()} />
               ))}
             </div>
           </>

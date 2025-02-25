@@ -6,6 +6,24 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export async function createUser(name: string, email: string, imgurl: string) {
+  const { data, error } = await supabase
+    .from("users")
+    .insert([{ name, email, imgurl, role: "user" }]);
+
+  return { data, error };
+}
+
+export async function getUser(email: string) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  return { data, error };
+}
+
 export async function getCars() {
   const { data, error } = await supabase.from("cars").select("*");
 
@@ -38,11 +56,12 @@ export async function editCar(
   year?: string,
   price?: string,
   img?: string,
-  available?: boolean
+  available?: boolean,
+  costumer_email?: string
 ) {
   const { data, error } = await supabase
     .from("cars")
-    .update([{ make, model, year, price, img, available }])
+    .update([{ make, model, year, price, img, available, costumer_email }])
     .eq("id", id);
 
   return { data, error };

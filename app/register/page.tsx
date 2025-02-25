@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 
-import { auth } from "@/lib/firebase"; // Make sure you have initialized Firebase app in this file
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUser } from "@/lib/supabase";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -27,27 +28,29 @@ export default function RegisterPage() {
     email: "",
     password: "",
   });
+  const [error, setError] = useState(""); // Stato per l'errore della password
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(""); // Resetta gli errori
+
+    // **Validazione della password**
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      setIsLoading(false);
+      return;
+    }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
+      const response = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
-      // const response = await fetch("/api/auth/register", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(formData),
-      // });
+      console.log(response);
 
-      const user = userCredential.user;
-
-      // 2. Aggiornare il displayName
-      await updateProfile(user, { displayName: formData.name, photoURL: "" });
+      const newUser = await createUser(formData.name, formData.email, "");
 
       toast.success("Registration successful");
       router.push("/login");
@@ -103,6 +106,8 @@ export default function RegisterPage() {
                 }
                 required
               />
+              {error && <p className="text-red-500 text-sm">{error}</p>}{" "}
+              {/* Messaggio di errore */}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

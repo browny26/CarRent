@@ -14,10 +14,12 @@ import { editCar } from "@/lib/supabase";
 
 interface CarCardProps {
   car: Car;
+  onRent: () => void;
 }
 
-export function CarCard({ car }: CarCardProps) {
+export function CarCard({ car, onRent }: CarCardProps) {
   const { user, loading } = useAuth();
+
   const handleRent = async () => {
     if (user) {
       const data = await editCar(
@@ -27,13 +29,15 @@ export function CarCard({ car }: CarCardProps) {
         String(car.year),
         String(car.price),
         car.image,
-        !car.available
+        !car.available,
+        String(user?.email)
       );
 
       if (data.error) {
         toast.error("Failed to rent car");
       } else {
         toast.success("Car rented successfully");
+        onRent?.();
       }
     } else {
       toast.info("Please log in to rent this car");

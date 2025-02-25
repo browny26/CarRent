@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Car } from "../types";
+import { Car, User } from "../types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,22 +22,46 @@ import {
 import { Label } from "@/components/ui/label";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
-import deleteCar, { addCar, editCar, getCars } from "@/lib/supabase";
+import deleteCar, { addCar, editCar, getCars, getUser } from "@/lib/supabase";
+import { useAuth } from "@/contexts/authContext";
+import { useRouter } from "next/navigation";
+
+import { hatch } from "ldrs";
+
+hatch.register();
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const [cars, setCars] = useState<Car[]>([]);
+  const [account, setAccount] = useState<User>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isloading, setIsLoading] = useState(false);
   const [editingCar, setEditingCar] = useState<Partial<Car> | null>(null);
 
-  // const fetchCars = async () => {
-  //   const response = await fetch("/api/cars");
-  //   const data = await response.json();
-  //   setCars(data);
-  // };
+  const fetchCars = async () => {
+    const response = await fetch("/api/cars", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
 
-  async function fetchCars() {
-    const data = await getCars();
-    setCars(data);
+    const data = await response.json();
+
+    if (Array.isArray(data.data)) {
+      setCars(data.data);
+    } else {
+      console.error("Expected an array but got:", data);
+      setCars([]); // Assicura che cars sia sempre un array
+    }
+  };
+
+  async function currentUser() {
+    const res = await getUser(String(user?.email));
+    setAccount(res.data);
+
+    if (res.data.role !== "admin") {
+      router.push("/"); // Reindirizza se non è un admin
+    }
   }
 
   function handleEvent(e: React.FormEvent) {
@@ -62,10 +86,64 @@ export default function AdminDashboard() {
     }
 
     setIsOpen(false);
+
+    /* const car = {
+      make: String(editingCar?.make),
+      model: String(editingCar?.model),
+      year: String(editingCar?.year),
+      price: String(editingCar?.price),
+      img: String(editingCar?.image),
+    };
+    e.preventDefault();
+    setIsLoading(true);
+
+    const response = await fetch("/api/cars", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(car),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      toast.success("Car added successfully!");
+      router.refresh();
+    } else {
+      toast.error(result.error || "Failed to add car.");
+    }
+
+    setIsLoading(false); */
   }
 
   async function handleEditCar(e: React.FormEvent) {
     e.preventDefault();
+    /* e.preventDefault();
+
+    if (!editingCar?.id) {
+      toast.error("Invalid car data.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/cars", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editingCar), // Usa editingCar
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("Car updated successfully!");
+        fetchCars();
+      } else {
+        toast.error(result.error || "Failed to update car.");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred while updating the car.");
+    } */
+
     const data = await editCar(
       String(editingCar?.id),
       String(editingCar?.make),
@@ -103,6 +181,13 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchCars();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      console.log("User email:", user.email);
+      currentUser();
+    }
+  }, [user]);
 
   // const handleSubmit = async (e: React.FormEvent) => {
   //   e.preventDefault();
@@ -143,6 +228,15 @@ export default function AdminDashboard() {
   //     }
   //   }
   // };
+
+  // Se l'account non è caricato o se l'utente non è admin, non renderizza nulla (o mostra un loading)
+  if (loading || !account) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <l-hatch size="28" stroke="4" speed="3.5" color="black"></l-hatch>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto h-screen px-4 py-8">

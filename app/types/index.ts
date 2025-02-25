@@ -6,12 +6,15 @@ export interface Car {
   price: number;
   image: string;
   available: boolean;
+  costumer_email: string;
 }
 
 export interface User {
   id: string;
-  email: string;
   name?: string;
+  email: string;
+  img?: string;
+  role: string;
   createdAt: string;
 }
 
