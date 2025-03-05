@@ -49,6 +49,7 @@ export default function AdminDashboard() {
 
     if (Array.isArray(data.data)) {
       setCars(data.data);
+      console.log(data.data);
     } else {
       console.error("Expected an array but got:", data);
       setCars([]); // Assicura che cars sia sempre un array
@@ -152,7 +153,7 @@ export default function AdminDashboard() {
       String(editingCar?.model),
       String(editingCar?.year),
       String(editingCar?.price),
-      String(editingCar?.image)
+      String(editingCar?.img)
     );
 
     if (data.error) {
@@ -314,9 +315,9 @@ export default function AdminDashboard() {
                 <Label htmlFor="image">Image URL</Label>
                 <Input
                   id="image"
-                  value={editingCar?.image || ""}
+                  value={editingCar?.img || ""}
                   onChange={(e) =>
-                    setEditingCar({ ...editingCar, image: e.target.value })
+                    setEditingCar({ ...editingCar, img: e.target.value })
                   }
                   required
                 />
@@ -337,6 +338,7 @@ export default function AdminDashboard() {
               <TableHead>Model</TableHead>
               <TableHead>Year</TableHead>
               <TableHead>Price/Day</TableHead>
+              <TableHead>Image</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -347,6 +349,9 @@ export default function AdminDashboard() {
                 <TableCell>{car.model}</TableCell>
                 <TableCell>{car.year}</TableCell>
                 <TableCell>${car.price}</TableCell>
+                <TableCell className="line-clamp-2 max-w-[200px] overflow-x-scroll">
+                  {car.img}
+                </TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Button

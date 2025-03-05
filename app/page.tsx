@@ -6,9 +6,20 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center">
+      <section className="relative h-[90vh] grid grid-cols-6 grid-rows-3 gap-5 p-3">
+        <div className="col-span-3 row-span-2 bg-neutral-950 rounded-3xl p-10 flex flex-col items-center justify-center gap-10">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+            Experience Luxury on Every Journey
+          </h1>
+          <p className="text-lg text-neutral-300 mb-8">
+            Discover our premium selection of vehicles for your next adventure.
+            From luxury sedans to powerful SUVs, find the perfect car for any
+            occasion.
+          </p>
+        </div>
+
         <div
-          className="absolute inset-0 z-0"
+          className="relative col-span-3 row-span-3 rounded-3xl"
           style={{
             backgroundImage:
               "url(https://images.unsplash.com/photo-1485291571150-772bcfc10da5?auto=format&fit=crop&q=80)",
@@ -16,37 +27,24 @@ export default function Home() {
             backgroundPosition: "center",
           }}
         >
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-black/60 rounded-3xl" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              Experience Luxury on Every Journey
-            </h1>
-            <p className="text-xl text-white/90 mb-8">
-              Discover our premium selection of vehicles for your next
-              adventure. From luxury sedans to powerful SUVs, find the perfect
-              car for any occasion.
-            </p>
-            <div className="flex gap-4">
-              <Link href="/search">
-                <Button size="lg" className="text-lg px-8">
-                  Browse Cars <ArrowRight className="ml-2" />
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-lg px-8 bg-white/10 hover:bg-white/20 text-white border-white/20"
-                >
-                  Sign Up
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
+        {/* <div className="col-span-2 row-span-1 w-full h-full bg-neutral-950 hover:bg-neutral-950/80 rounded-3xl flex items-center justify-center"> */}
+        <Link
+          href="/search"
+          className="col-span-2 row-span-1 w-full h-full bg-neutral-950 hover:bg-neutral-950/80 text-neutral-50 rounded-3xl flex items-center justify-center"
+        >
+          Browse Cars <ArrowRight className="ml-2" />
+        </Link>
+        {/* </div> */}
+
+        <Link
+          href="/register"
+          className="col-span-1 row-span-1 w-full h-full bg-neutral-950/20 hover:bg-neutral-950/30 border-white text-neutral-950 font-semibold rounded-3xl flex items-center justify-center"
+        >
+          Sign Up
+        </Link>
       </section>
 
       {/* Features Section */}

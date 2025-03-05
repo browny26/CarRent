@@ -4,7 +4,7 @@ export interface Car {
   model: string;
   year: number;
   price: number;
-  image: string;
+  img: string;
   available: boolean;
   costumer_email: string;
 }

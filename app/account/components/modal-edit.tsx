@@ -18,10 +18,9 @@ import { useEffect, useState } from "react";
 
 interface ModalEditProps {
   user: User | null;
-  onClose: () => void;
 }
 
-export default function ModalEdit({ user, onClose }: ModalEditProps) {
+export default function ModalEdit({ user }: ModalEditProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [edit, setEdit] = useState({
     displayName: user?.displayName,
@@ -45,7 +44,6 @@ export default function ModalEdit({ user, onClose }: ModalEditProps) {
         await updateProfile(user, edit);
         //setUser({ ...user, photoURL }); // Aggiorna lo stato globale
         toast.success("Profile updated!");
-        onClose();
       } catch (error) {
         toast.error("Failed to update profile");
         console.error(error);

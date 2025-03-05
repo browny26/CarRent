@@ -18,29 +18,23 @@ interface CarCardProps {
 }
 
 export function CarCard({ car, onRent }: CarCardProps) {
-  const { user, loading } = useAuth();
-
   const handleRent = async () => {
-    if (user) {
-      const data = await editCar(
-        String(car.id),
-        car.make,
-        car.model,
-        String(car.year),
-        String(car.price),
-        car.img,
-        !car.available,
-        String(user?.email)
-      );
+    const data = await editCar(
+      String(car.id),
+      car.make,
+      car.model,
+      String(car.year),
+      String(car.price),
+      car.img,
+      !car.available,
+      String("")
+    );
 
-      if (data.error) {
-        toast.error("Failed to rent car");
-      } else {
-        toast.success("Car rented successfully");
-        onRent?.();
-      }
+    if (data.error) {
+      toast.error("Failed to cancel rent");
     } else {
-      toast.info("Please log in to rent this car");
+      toast.success("Rent canceled successfully");
+      onRent?.();
     }
   };
 
@@ -61,23 +55,9 @@ export function CarCard({ car, onRent }: CarCardProps) {
           {car.year} • ${car.price}/day
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-between">
-          <div className="text-sm">
-            Status:{" "}
-            <span className={car.available ? "text-green-600" : "text-red-600"}>
-              {car.available ? "Available" : "Rented"}
-            </span>
-          </div>
-        </div>
-      </CardContent>
       <CardFooter>
-        <Button
-          className="w-full"
-          onClick={handleRent}
-          disabled={!car.available}
-        >
-          {car.available ? "Rent Now" : "Not Available"}
+        <Button className="w-full" onClick={handleRent}>
+          {"Cancel Rent"}
         </Button>
       </CardFooter>
     </Card>

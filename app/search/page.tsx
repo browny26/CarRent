@@ -32,7 +32,7 @@ export default function SearchPage() {
     search: "",
     make: "All Makes",
     minPrice: 0,
-    maxPrice: 500,
+    maxPrice: 999999,
     year: "All Years",
   });
 
@@ -54,6 +54,7 @@ export default function SearchPage() {
 
   async function fetchCars() {
     const data = await getCars();
+    console.log("Fetched cars:", data);
     setCars(data);
     setLoading(false);
   }
@@ -68,6 +69,7 @@ export default function SearchPage() {
   );
 
   const filteredCars = cars.filter((car) => {
+    console.log(car);
     const matchesSearch =
       car.make.toLowerCase().includes(filters.search.toLowerCase()) ||
       car.model.toLowerCase().includes(filters.search.toLowerCase());
@@ -79,8 +81,21 @@ export default function SearchPage() {
     const matchesPrice =
       car.price >= filters.minPrice && car.price <= filters.maxPrice;
 
+    const isFilteredOut = !(
+      matchesSearch &&
+      matchesMake &&
+      matchesPrice &&
+      matchesYear
+    );
+    if (isFilteredOut) {
+      console.log("Filtered out:", car);
+    }
+
     return matchesSearch && matchesMake && matchesPrice && matchesYear;
   });
+
+  console.log("Cars before filtering:", cars.length);
+  console.log("Cars after filtering:", filteredCars.length);
 
   return (
     <main className="min-h-screen bg-background">

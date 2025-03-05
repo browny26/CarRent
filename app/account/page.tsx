@@ -18,11 +18,11 @@ import { useAuth } from "@/contexts/authContext";
 import { onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { getCars } from "@/lib/supabase";
-import { CarCard } from "@/components/ui/car-card";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import ModalEdit from "./components/modal-edit";
 
 import { hatch } from "ldrs";
+import { CarCard } from "./components/car-card";
 
 hatch.register();
 
