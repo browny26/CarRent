@@ -8,7 +8,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-[90vh] grid grid-cols-6 grid-rows-3 gap-5 p-3">
         <div className="col-span-3 row-span-2 bg-neutral-950 rounded-3xl p-10 flex flex-col items-center justify-center gap-10">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 font-grotesk">
             Experience Luxury on Every Journey
           </h1>
           <p className="text-lg text-neutral-300 mb-8">
@@ -27,13 +27,13 @@ export default function Home() {
             backgroundPosition: "center",
           }}
         >
-          <div className="absolute inset-0 bg-black/60 rounded-3xl" />
+          {/* <div className="absolute inset-0 bg-black/60 rounded-3xl" /> */}
         </div>
 
         {/* <div className="col-span-2 row-span-1 w-full h-full bg-neutral-950 hover:bg-neutral-950/80 rounded-3xl flex items-center justify-center"> */}
         <Link
           href="/search"
-          className="col-span-2 row-span-1 w-full h-full bg-neutral-950 hover:bg-neutral-950/80 text-neutral-50 rounded-3xl flex items-center justify-center"
+          className="col-span-2 row-span-1 w-full h-full bg-lux hover:bg-neutral-950/80 text-neutral-50 rounded-3xl flex items-center justify-center"
         >
           Browse Cars <ArrowRight className="ml-2" />
         </Link>
