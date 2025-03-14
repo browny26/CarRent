@@ -73,9 +73,10 @@ export function CarCard({ car, onRent }: CarCardProps) {
       </CardContent>
       <CardFooter>
         <Button
-          className="w-full"
+          className="w-full text-neutral-50"
           onClick={handleRent}
           disabled={!car.available}
+          variant={"secondary"}
         >
           {car.available ? "Rent Now" : "Not Available"}
         </Button>

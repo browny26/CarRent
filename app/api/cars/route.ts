@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"; // Forza il comportamento dinamico
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
@@ -45,16 +46,19 @@ export async function POST(request: Request) {
   return NextResponse.json(car);
   }*/
 
-// export const dynamic = "force-dynamic"; // Forza il comportamento dinamico
-
 export async function GET() {
   try {
     const { data, error } = await supabase.from("cars").select("*");
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase error:", error);
+      return NextResponse.json({ error: "Database error" }, { status: 500 });
+    }
 
+    console.log("Data fetched:", data); // Debug
     return NextResponse.json({ success: true, data }, { status: 201 });
   } catch (error: any) {
+    console.error("Server error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

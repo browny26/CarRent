@@ -34,25 +34,33 @@ export default function AdminDashboard() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [cars, setCars] = useState<Car[]>([]);
-  const [account, setAccount] = useState<User>([]);
+  const [account, setAccount] = useState<User>();
   const [isOpen, setIsOpen] = useState(false);
   const [isloading, setIsLoading] = useState(true);
   const [editingCar, setEditingCar] = useState<Partial<Car> | null>(null);
 
   const fetchCars = async () => {
-    const response = await fetch("/api/cars", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    console.log("Fetching cars..."); // Debug
 
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/cars", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
 
-    if (Array.isArray(data.data)) {
-      setCars(data.data);
-      console.log(data.data);
-    } else {
-      console.error("Expected an array but got:", data);
-      setCars([]); // Assicura che cars sia sempre un array
+      console.log("Response status:", response.status); // Debug
+
+      const data = await response.json();
+      console.log("Fetched data:", data); // Debug
+
+      if (Array.isArray(data.data)) {
+        setCars(data.data);
+      } else {
+        console.error("Expected an array but got:", data);
+        setCars([]); // Evita errori nel render
+      }
+    } catch (error) {
+      console.error("Error fetching cars:", error);
     }
   };
 
@@ -78,7 +86,7 @@ export default function AdminDashboard() {
       String(editingCar?.model),
       String(editingCar?.year),
       String(editingCar?.price),
-      String(editingCar?.image)
+      String(editingCar?.img)
     );
 
     if (data.error) {
@@ -182,13 +190,10 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchCars();
-  }, []);
-
-  useEffect(() => {
     if (user) {
       console.log("User email:", user.email);
       currentUser();
+      fetchCars();
     }
   }, [user]);
 
@@ -247,7 +252,12 @@ export default function AdminDashboard() {
         <h1 className="text-3xl font-bold">Car Rental Admin Dashboard</h1>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => setEditingCar({})}>
+            <Button
+              variant="secondary"
+              className="text-neutral-50"
+              disabled={!user}
+              onClick={() => setEditingCar({})}
+            >
               <Plus className="mr-2 h-4 w-4" />
               Add New Car
             </Button>
@@ -330,8 +340,8 @@ export default function AdminDashboard() {
         </Dialog>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border h-full">
+        <Table className="h-full">
           <TableHeader>
             <TableRow>
               <TableHead>Make</TableHead>
@@ -342,7 +352,7 @@ export default function AdminDashboard() {
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className="h-full">
             {cars.map((car) => (
               <TableRow key={car.id}>
                 <TableCell>{car.make}</TableCell>
